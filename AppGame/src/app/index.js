@@ -1,5 +1,14 @@
-// index.js - telas do app de jogatinas em React Native (Expo Go)
-// não usei nenhuma lib de navegação, controlo a pilha de telas na mão com useState
+// index.js - telas do app de jogatinas em React Native (Expo Go).
+
+// Não usei nenhuma lib de navegação, controlo a pilha de telas na mão com useState criando um histórico simples; 
+// quando vou para uma tela, adiciono ela ao histórico, e quando volto, removo a última;
+// fiz dessa forma porque o aplicativo tem poucas telas e eu queria manter a implementação mais simples. (254-261)
+
+// Separei cada tela em um componente para evitar colocar toda a interface dentro do App;
+// assim cada parte do aplicativo fica responsável por uma funcionalidade."
+
+// Criei componentes reutilizáveis para elementos que aparecem mais de uma vez, como cards, cabeçalho e botão;
+// se eu precisar alterar o estilo ou comportamento daquele elemento, posso fazer a alteração em um único lugar. (61-132)
 
 import React, { useState } from 'react';
 import { registerRootComponent } from 'expo';
@@ -15,7 +24,8 @@ import {
   Linking,
 } from 'react-native';
 
-// dados de exemplo, como não tenho backend deixei tudo aqui em cima
+//como não tenho backend deixei tudo aqui em cima
+//utilizei arrays de objetos para representar os dados, simulando as informações. 
 const usuario = { nome: 'Letícia', inicial: 'L' };
 
 const categorias = [
@@ -172,11 +182,13 @@ function TelaHome({ irPara, partidas, filtro, setFiltro }) {
           <Text style={{ color: '#fff', fontSize: 24, marginTop: -2 }}>+</Text>
         </TouchableOpacity>
       </View>
-
+      
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
+        {/*Usei map() para percorrer os arrays e gerar os componentes automaticamente. 
+        Assim não preciso escrever manualmente um card para cada categoria ou partida.*/}
         {categorias.map((c) => (
           <CardCategoria
-            key={c.id}
+            key={c.id} //A key identifica cada elemento da lista para o React conseguir controlar os elementos de forma adequada.
             categoria={c}
             ativa={filtro === c.id}
             onPress={() => setFiltro(filtro === c.id ? null : c.id)}
@@ -279,7 +291,8 @@ function TelaAgendar({ voltar, setPartidas }) {
     if (!numeroValido(hora, 0, 23) || !numeroValido(minuto, 0, 59)) return setErro('Confira o horário');
 
     setPartidas((atual) => [
-      ...atual,
+      ...atual, //Usei o operador spread para manter todas as partidas que já existiam e adicionar a nova no final do array.
+     // senao acabaria substituindo a lista anterior pela nova informação
       {
         id: Date.now(),
         servidor: servidorId,
@@ -359,8 +372,8 @@ function TelaAgendar({ voltar, setPartidas }) {
         </View>
 
         {erro !== '' && <Text style={estilos.erro}>{erro}</Text>}
-
-        <TouchableOpacity style={estilos.btnPrincipal} onPress={agendar}>
+       {/*Utilizei TouchableOpacity para criar elementos clicáveis no React Native. O onPress define a função executada quando o usuário toca no elemento.*/}
+        <TouchableOpacity style={estilos.btnPrincipal} onPress={agendar}> 
           <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>Agendar</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -399,7 +412,7 @@ export default function App() {
 registerRootComponent(App);
 
 // estilos 
-// deixei tudo num StyleSheet só, separado por tela pra facilitar de achar
+// deixei tudo num StyleSheet do React Native só, separado por tela pra facilitar de achar, concentrando os estilos em um só lugar.
 
 const estilos = StyleSheet.create({
   tela: { flex: 1, padding: 20 },
